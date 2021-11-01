@@ -21,7 +21,7 @@ client.once('ready', async () => {
 let replies = {
     "shryder": "fucker",
     "jebait": "https://cdn.discordapp.com/attachments/902931009283162153/904769760175198278/Superman.mp4",
-    "🍦": "BING CHILLING"
+    "🍦": "BING CHILLING",
 };
 client.on("messageCreate", async message => {
     if (message.content in replies) {
@@ -34,8 +34,17 @@ client.on('messageCreate', async message => {
     if (message.content.toLowerCase().includes("nothing happened in tiananmen square")){
         message.channel.send("+999 Social Credit")
     }
-    if (message.content.toLowerCase().includes("taiwan isn't real", "taiwan isnt real")){
+    if (message.content.toLowerCase().includes("winnie the pooh")){
+        message.channel.send("-100 Social Credit")
+    }
+    if (message.content.toLowerCase().includes("taiwan isn't real")){
         message.channel.send("+100 Social Credit")
+    }
+    if (message.content.toLowerCase().includes("taiwan isnt real")){ //HOW THE FUCK DO I ADD THIS TO THE IF STATEMENT ABOVE JIM JIM HELP PLS TY
+        message.channel.send("+100 Social Credit")
+    if (message.content.toLowerCase().includes("taiwan is real")){
+        message.channel,send("-100 Social Credit")
+    }
     }
     if (!(message.content.startsWith(client.prefix) || message.mentions.users.first() == client.user) || message.author.bot) return;
     
