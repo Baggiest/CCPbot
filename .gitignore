@@ -84,3 +84,4 @@ typings/
 # pm2
 .pm2
 .pm2.bak
+index.js
