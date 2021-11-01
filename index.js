@@ -22,7 +22,7 @@ let replies = {
     "shryder": "fucker",
     "jebait": "https://cdn.discordapp.com/attachments/902931009283162153/904769760175198278/Superman.mp4",
     "🍦": "BING CHILLING",
-    "cn!dance": "https://cdn.discordapp.com/attachments/768262165525168168/904823066473926706/dance.mov"
+    "dance": "https://cdn.discordapp.com/attachments/768262165525168168/904823066473926706/dance.mov"
 };
 client.on("messageCreate", async message => {
     if (message.content in replies) {
