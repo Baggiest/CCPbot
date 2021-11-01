@@ -30,8 +30,8 @@ client.on("messageCreate", async message => {
 })
 
 client.on('messageCreate', async message => {
-    if (message.content.toLowerCase().includes("tiananmen")){
-        message.channel.send("-99 Social Credit")
+    if (message.content.toLowerCase().includes("nothing happened in tiananmen square")){
+        message.channel.send("+999 Social Credit")
     }
     if (message.content.toLowerCase().includes("taiwan isn't real", "taiwan isnt real")){
         message.channel.send("+100 Social Credit")
