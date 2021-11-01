@@ -14,3 +14,4 @@ made by Degen corp LLC
 * Kaylon
 * Qusai
 * LocalHobo
+* ~~hasan~~ yeah that guy
