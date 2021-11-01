@@ -20,7 +20,8 @@ client.once('ready', async () => {
 });
 let replies = {
     "shryder": "fucker",
-    "jebait": "https://cdn.discordapp.com/attachments/902931009283162153/904769760175198278/Superman.mp4"
+    "jebait": "https://cdn.discordapp.com/attachments/902931009283162153/904769760175198278/Superman.mp4",
+    "🍦": "BING CHILLING"
 };
 client.on("messageCreate", async message => {
     if (message.content in replies) {
