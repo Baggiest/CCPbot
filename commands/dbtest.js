@@ -5,6 +5,5 @@ module.exports = {
     async execute(message, args) {
         const items = await message.client.dbInstance.collection('config').findOne({ ping: "pong" });
         message.reply(items.ping)
-        dbInstance.createCollection('users');
     },
 };
