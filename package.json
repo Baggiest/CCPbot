@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/MrBaggieBug/CCPbot#readme",
   "dependencies": {
-    "discord.js": "^13.3.0"
+    "discord.js": "^13.3.0",
+    "mongodb": "^4.1.3"
   }
 }

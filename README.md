@@ -14,6 +14,6 @@ made by Degen corp LLC
 * Kaylon
 * Qusai
 * LocalHobo
-* ~~hasan~~ yeah that guy
+* ~~hasan~~ yeah that guy - fuck that guy L nerd
 
 ..

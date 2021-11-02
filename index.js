@@ -4,6 +4,7 @@ const config = require('./config.json');
 const fs = require('fs');
 client.commands = new Discord.Collection();
 const cooldowns = new Discord.Collection();
+const MongoClient = require('mongodb').MongoClient;
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 client.prefix = config.prefix;
 for (const file of commandFiles) {
@@ -16,40 +17,24 @@ async function exeCommand(command, message, args) {
 }
 
 client.once('ready', async () => {
-    console.log("Bot Initialised")
+    const databaseClient = await new MongoClient(config.databaseURL, { useNewUrlParser: true, useUnifiedTopology: true });
+    databaseClient.connect(err => {
+        client.dbInstance = databaseClient.db(config.databaseName);
+    });
+
+    console.log("bot started")
 });
-let replies = {
-    "shryder": "fucker",
-    "jebait": "https://cdn.discordapp.com/attachments/902931009283162153/904769760175198278/Superman.mp4",
-    "🍦": "BING CHILLING",
-    "dance": "https://cdn.discordapp.com/attachments/768262165525168168/904823066473926706/dance.mov",
-    "this": "https://cdn.discordapp.com/emojis/881595969689518150.gif?size=96"
+let replies = { //autoreply system based on keywords
 };
 client.on("messageCreate", async message => {
     if (message.content in replies) {
-        message.reply(replies[message.content]);
+        message.reply(replies[message.content]); //seperate client.on for let replies
         return;
     }
 })
 
 client.on('messageCreate', async message => {
-    if (message.content.toLowerCase().includes("nothing happened in tiananmen square")){
-        message.channel.send("+999 Social Credit")
-    }
-    if (message.content.toLowerCase().includes("winnie the pooh")){
-        message.channel.send("-100 Social Credit")
-    }
-    if (message.content.toLowerCase().includes("taiwan isn't real")){
-        message.channel.send("+100 Social Credit")
-    }
-    if (message.content.toLowerCase().includes("taiwan isnt real")){ //HOW THE FUCK DO I ADD THIS TO THE IF STATEMENT ABOVE JIM JIM HELP PLS TY
-        message.channel.send("+100 Social Credit")
-    if (message.content.toLowerCase().includes("taiwan is real")){
-        message.channel,send("-100 Social Credit")
-    }
-    }
     if (!(message.content.startsWith(client.prefix) || message.mentions.users.first() == client.user) || message.author.bot) return;
-    
     if (message.content.startsWith(client.prefix)) {
         args = message.content.slice(client.prefix.length).split(/ +/);
     } else {
@@ -125,6 +110,8 @@ client.on('messageCreate', async message => {
         console.error(`Command perms check: ${error}`);
         message.reply('there was an error trying to execute that command!');
     }
+
+
 })
 
 client.login(config.token);
