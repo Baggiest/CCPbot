@@ -9,7 +9,11 @@ module.exports = class CommandsModule {
   }
 
   register(ccpClient) {
-    ccpClient.registerEvent('messageCreate', this.handleMessage.bind(this));
+    this.ccpClient = ccpClient;
+    this.ccpClient.registerEvent(
+      'messageCreate',
+      this.handleMessage.bind(this)
+    );
   }
 
   async loadFromDirectory(path) {
