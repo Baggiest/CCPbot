@@ -15,9 +15,9 @@ module.exports = class CCPClient {
     this.listeners.get(event).add(callback);
   }
 
-  registerModule(module) {
-    this.modules.set(Symbol(module.constructor.name), module);
-    module.register(this);
+  async registerModule(name, module) {
+    this.modules.set(name, module);
+    await module.register(this);
   }
 
   async init(token = this.settings.get('token')) {

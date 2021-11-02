@@ -3,6 +3,7 @@ const { join } = require('path');
 const CCPClient = require('./client/ccp-client');
 const SettingsProvider = require('./client/settings-provider');
 const CommandsModule = require('./client/modules/commands');
+const MongoDBModule = require('./client/modules/mongodb');
 const config = require('./config.json');
 
 const clientOptions = {
@@ -28,10 +29,17 @@ const client = new CCPClient(clientOptions, settings);
 const commandsModule = new CommandsModule();
 commandsModule.loadFromDirectory(join(__dirname, 'commands'));
 
-client.registerModule(commandsModule);
+const mongoDBModule = new MongoDBModule(config.database);
 
-client.registerEvent('ready', () => {
-  console.log('Ready!');
-});
+async function bootstrap() {
+  await client.registerModule('db', mongoDBModule);
+  await client.registerModule('commands', commandsModule);
 
-client.init();
+  client.registerEvent('ready', () => {
+    console.log('Ready!');
+  });
+
+  await client.init();
+}
+
+bootstrap();

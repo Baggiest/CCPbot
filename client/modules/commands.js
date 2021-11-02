@@ -35,6 +35,6 @@ module.exports = class CommandsModule {
 
     if (!this.commands.has(commandName)) return;
     const command = this.commands.get(commandName);
-    command.execute(message, args);
+    command.execute(message, args, this);
   }
 };
