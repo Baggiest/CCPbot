@@ -29,4 +29,9 @@ const commandsModule = new CommandsModule();
 commandsModule.loadFromDirectory(join(__dirname, 'commands'));
 
 client.registerModule(commandsModule);
+
+client.registerEvent('ready', () => {
+  console.log('Ready!');
+});
+
 client.init();
