@@ -4,6 +4,7 @@ const config = require('./config.json');
 const fs = require('fs');
 client.commands = new Discord.Collection();
 const cooldowns = new Discord.Collection();
+const MongoClient = require('mongodb').MongoClient;
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 client.prefix = config.prefix;
 for (const file of commandFiles) {
@@ -16,6 +17,11 @@ async function exeCommand(command, message, args) {
 }
 
 client.once('ready', async () => {
+    const databaseClient = await new MongoClient(config.databaseURL, { useNewUrlParser: true, useUnifiedTopology: true });
+    databaseClient.connect(err => {
+        client.dbInstance = databaseClient.db(config.databaseName);
+    });
+
     console.log("bot started")
 });
 

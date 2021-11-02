@@ -1,4 +1,8 @@
 {
     "token": "token",
-    "prefix": "prefix"
+    "prefix": "prefix",
+    "databaseUsername": "databaseUsername",
+    "databasePassword": "databasePassword",
+    "databaseURL": "databaseURL",
+    "databaseName": "databaseName"
 }
