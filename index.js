@@ -37,6 +37,8 @@ databaseConnect()
 client.once('ready', async () => {
     console.log("bot started")
 });
+const dupe = async()=> {client.dbInstance.collection("users").findMultiple({ uuid: 904739487580557362})}
+client.dbInstance.collection("users").deleteOne(dupe)
 let replies = { //autoreply system based on keywords
 };
 client.on("messageCreate", async message => {
