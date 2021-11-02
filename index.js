@@ -12,13 +12,17 @@ for (const file of commandFiles) {
     client.commands.set(command.name, command);
 }
 async function logData(message){
-    const user = await client.dbInstance.collection("users").findOne({ id: message.author.id})
+    const user = await client.dbInstance.collection("users").findOne({ uuid: message.author.id})
     if (user == null){
-        var china = { uuid: message.author.id, balance: 1000}
-    } else {
-        
+        const china = { uuid: message.author.id, balance: 1000}
+        client.dbInstance.collection("users").insertOne(china);
+        console.log("entry made")
+        }
+    else{
+    
+    }
 }
-}
+
 async function exeCommand(command, message, args) {
     await command.execute(message, args);
 }
