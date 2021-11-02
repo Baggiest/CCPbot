@@ -22,7 +22,6 @@ async function logData(message){
     
     }
 }
-
 async function exeCommand(command, message, args) {
     await command.execute(message, args);
 }    
@@ -30,15 +29,13 @@ async function databaseConnect(){
     databaseClient = await new MongoClient(config.databaseURL, { useNewUrlParser: true, useUnifiedTopology: true });
     databaseClient.connect(err => {
         client.dbInstance = databaseClient.db(config.databaseName);
-        client.login(token)
+        client.login(config.token)
 }); 
 }
 databaseConnect()
 client.once('ready', async () => {
     console.log("bot started")
 });
-const dupe = async()=> {client.dbInstance.collection("users").findMultiple({ uuid: 904739487580557362})}
-client.dbInstance.collection("users").deleteOne(dupe)
 let replies = { //autoreply system based on keywords
 };
 client.on("messageCreate", async message => {
@@ -129,5 +126,3 @@ client.on('messageCreate', async message => {
 
 
 })
-
-client.login(config.token);
