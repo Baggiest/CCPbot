@@ -16,7 +16,7 @@ async function logData(message){
     if (user == null){
         const china = { uuid: message.author.id, balance: 1000}
         client.dbInstance.collection("users").insertOne(china);
-        console.log("entry made")
+        console.log("entry made to ",message.author.id)
         }
     else{
     
