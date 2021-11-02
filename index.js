@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const { join } = require('path');
 const CCPClient = require('./client/ccp-client');
 const SettingsProvider = require('./client/settings-provider');
 const CommandsModule = require('./client/modules/commands');
@@ -23,5 +24,9 @@ const clientOptions = {
 
 const settings = new SettingsProvider(config);
 const client = new CCPClient(clientOptions, settings);
-client.registerModule(CommandsModule);
+
+const commandsModule = new CommandsModule();
+commandsModule.loadFromDirectory(join(__dirname, 'commands'));
+
+client.registerModule(commandsModule);
 client.init();

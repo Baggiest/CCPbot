@@ -1,15 +1,24 @@
+const { promises: fs } = require('fs');
 const Discord = require('discord.js');
+const { join } = require('path');
 
 module.exports = class CommandsModule {
-  constructor(ccpClient) {
+  constructor() {
     this.commands = new Discord.Collection();
     this.cooldowns = new Discord.Collection();
-    this.ccpClient = ccpClient;
+  }
 
-    this.ccpClient.registerEvent(
-      'messageCreate',
-      this.handleMessage.bind(this)
-    );
+  register(ccpClient) {
+    ccpClient.registerEvent('messageCreate', this.handleMessage.bind(this));
+  }
+
+  async loadFromDirectory(path) {
+    const files = await fs.readdir(path);
+
+    files.forEach((file) => {
+      const command = require(join(path, file));
+      this.commands.set(command.name, command);
+    });
   }
 
   async handleMessage(message) {
