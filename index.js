@@ -25,8 +25,9 @@ client.once('ready', async () => {
     console.log("bot started")
 });
 
-client.on('messageCreate', async message => {
+    
     if (!(message.content.startsWith(client.prefix) || message.mentions.users.first() == client.user) || message.author.bot) return;
+ 
     if (message.content.startsWith(client.prefix)) {
         args = message.content.slice(client.prefix.length).split(/ +/);
     } else {
@@ -103,7 +104,5 @@ client.on('messageCreate', async message => {
         message.reply('there was an error trying to execute that command!');
     }
 
-
-})
 
 client.login(config.token);
