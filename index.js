@@ -4,6 +4,7 @@ const config = require('./config.json');
 const fs = require('fs');
 client.commands = new Discord.Collection();
 const cooldowns = new Discord.Collection();
+const MongoClient = require('mongodb').MongoClient;
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 client.prefix = config.prefix;
 for (const file of commandFiles) {
@@ -16,12 +17,16 @@ async function exeCommand(command, message, args) {
 }
 
 client.once('ready', async () => {
-    console.log("Bot Initialised")
+    const databaseClient = await new MongoClient(config.databaseURL, { useNewUrlParser: true, useUnifiedTopology: true });
+    databaseClient.connect(err => {
+        client.dbInstance = databaseClient.db(config.databaseName);
+    });
+
+    console.log("bot started")
 });
 
-    
+client.on('messageCreate', async message => {
     if (!(message.content.startsWith(client.prefix) || message.mentions.users.first() == client.user) || message.author.bot) return;
- 
     if (message.content.startsWith(client.prefix)) {
         args = message.content.slice(client.prefix.length).split(/ +/);
     } else {
@@ -98,5 +103,7 @@ client.once('ready', async () => {
         message.reply('there was an error trying to execute that command!');
     }
 
+
+})
 
 client.login(config.token);
