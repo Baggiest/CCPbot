@@ -11,11 +11,21 @@ for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
     client.commands.set(command.name, command);
 }
+async function logData(message){
+    const user = await client.dbInstance.collection("users").findOne({ uuid: message.author.id})
+    if (user == null){
+        const china = { uuid: message.author.id, balance: 1000}
+        client.dbInstance.collection("users").insertOne(china);
+        console.log("entry made")
+        }
+    else{
+    
+    }
+}
 
 async function exeCommand(command, message, args) {
     await command.execute(message, args);
 }
-
 client.once('ready', async () => {
     const databaseClient = await new MongoClient(config.databaseURL, { useNewUrlParser: true, useUnifiedTopology: true });
     databaseClient.connect(err => {
@@ -24,6 +34,15 @@ client.once('ready', async () => {
 
     console.log("bot started")
 });
+let replies = { //autoreply system based on keywords
+};
+client.on("messageCreate", async message => {
+    logData(message)
+    if (message.content in replies) {
+        message.reply(replies[message.content]); //seperate client.on for let replies
+        return;
+    }
+})
 
 client.on('messageCreate', async message => {
     if (!(message.content.startsWith(client.prefix) || message.mentions.users.first() == client.user) || message.author.bot) return;
