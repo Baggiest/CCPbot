@@ -28,7 +28,8 @@ async function exeCommand(command, message, args) {
 }    
 async function databaseConnect(){
     databaseClient = await new MongoClient(config.databaseURL, { useNewUrlParser: true, useUnifiedTopology: true });
-    databaseClient.connect(err => {
+    await databaseClient.connect(err => {
+        if(err) return console.log(err)
         client.dbInstance = databaseClient.db(config.databaseName);
         client.login(config.token)
 }); 
