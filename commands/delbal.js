@@ -8,14 +8,14 @@ module.exports = {
         const mention = message.mentions?.users?.first();
         const amount = parseInt(mention ? args[1] : args[0]);
         if(isNaN(amount)){
-            console.log("error parsing NaN");
+            console.log("error parsing NaN")
         } else {
             const userid = mention ? mention.id : message.author.id;
             const userB_OLD = await message.client.dbInstance.collection('users').findOne({ uuid: userid });
             const userU = await message.client.dbInstance.collection('users').updateOne(
                 { uuid: userid },
                 {
-                    $inc: {balance: amount}
+                    $inc: {balance: -amount}
                 }
             )
             const userB = await message.client.dbInstance.collection('users').findOne({ uuid: userid });
