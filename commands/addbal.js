@@ -9,15 +9,18 @@ module.exports = {
         let userObj
         if (mentionedUser != null){
             userObj = mentionedUser.id
-            const amount = parseInt(args[1], 10)
         } else {
-            const amount = parseInt(args[0], 10)
             userObj = message.author.id
         }
         console.log("Debugging.")
         console.log(userObj)
         console.log(args[0])
-        const amount = parseInt(args[0], 10)
+        if (args[0] = int){
+            const amount = parseInt(args[0], 10)
+        } else{
+            const amount = parseInt(args[1], 10)
+        }
+        console.log(amount)
         const user = await message.client.dbInstance.collection('users').updateOne(
             { uuid: userObj },
             {
