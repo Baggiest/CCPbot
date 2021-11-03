@@ -10,7 +10,7 @@ module.exports = {
                 $inc: {balance: amount}
             }
         )
-        let userB = user.balance
-        message.reply(`balance updated to ${userB.toString()}`)
+        const userB = await message.client.dbInstance.collection('users').findOne({ uuid: message.author.id });
+        message.reply(userB.balance.toString());
     }
 }
