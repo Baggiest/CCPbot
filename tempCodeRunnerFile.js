@@ -1,0 +1,1 @@
+client.login(config.token);
