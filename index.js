@@ -1,27 +1,21 @@
 const Discord = require('discord.js');
 const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILD_BANS, Discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS, Discord.Intents.FLAGS.GUILD_INTEGRATIONS, Discord.Intents.FLAGS.GUILD_WEBHOOKS, Discord.Intents.FLAGS.GUILD_PRESENCES, Discord.Intents.FLAGS.GUILD_MEMBERS, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Discord.Intents.FLAGS.DIRECT_MESSAGES, Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS] });
 const config = require('./config.json');
-
-
 const fs = require('fs');
 var startTime = performance.now();
 client.commands = new Discord.Collection();
-
-
 const cooldowns = new Discord.Collection();
+const MongoClient = require('mongodb').MongoClient;
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-
-
+client.prefix = config.prefix;
 for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
     client.commands.set(command.name, command);
 }
-
-
-async function logData(message) {
-    const user = await client.dbInstance.collection("users").findOne({ uuid: message.author.id })
-    if (user == null) {
-        const china = { uuid: message.author.id, balance: 1000 }
+async function logData(message){
+    const user = await client.dbInstance.collection("users").findOne({ uuid: message.author.id})
+    if (user == null){
+        const china = { uuid: message.author.id, balance: 1000}
         client.dbInstance.collection("users").insertOne(china);
         console.log("entry made to ",message.author.id)
         }
@@ -65,7 +59,7 @@ client.on('messageCreate', async message => {
     }
     let commandName;
     if (args) {
-        commandName = args.shift();
+        commandName = args.shift().toLowerCase();
     }
     const command = await client.commands.get(commandName)
         || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
