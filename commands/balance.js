@@ -4,6 +4,6 @@ module.exports = {
     cooldown: 5,
     async execute(message, args) {
         const user = await message.client.dbInstance.collection('users').findOne({ uuid: message.author.id });
-        message.reply.toString(user.balance);
+        message.reply(user.balance.toString());
     },
 };
