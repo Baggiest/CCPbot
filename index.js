@@ -80,7 +80,6 @@ client.on('messageCreate', async message => {
     if (message.content in replies) {
         message.reply(replies[message.content]);
         return;
-<<<<<<< HEAD
     }
     
 });
@@ -137,10 +136,6 @@ async function isGood(message) {
 	} else {
 	}
 }
-=======
-        }
-    })
->>>>>>> 1ab59f5d3020400e91d867a758c3adac840a0856
 
     if (!(message.content.startsWith(client.prefix) || message.mentions.users.first() == client.user) || message.author.bot) return;
     if (message.content.startsWith(client.prefix)) {
@@ -221,8 +216,4 @@ async function isGood(message) {
     };
 
 
-<<<<<<< HEAD
-});
-=======
 };
->>>>>>> 1ab59f5d3020400e91d867a758c3adac840a0856
