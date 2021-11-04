@@ -2,6 +2,8 @@ const Discord = require('discord.js');
 const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILD_BANS, Discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS, Discord.Intents.FLAGS.GUILD_INTEGRATIONS, Discord.Intents.FLAGS.GUILD_WEBHOOKS, Discord.Intents.FLAGS.GUILD_PRESENCES, Discord.Intents.FLAGS.GUILD_MEMBERS, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Discord.Intents.FLAGS.DIRECT_MESSAGES, Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS] });
 const config = require('./config.json');
 const fs = require('fs');
+const algoFile = require(`./creditAlgo/algorithm.js`);
+console.log(`${algoFile} was imported.`);
 var startTime = performance.now();
 client.commands = new Discord.Collection();
 const cooldowns = new Discord.Collection();
@@ -13,10 +15,7 @@ for (const file of commandFiles){
     const command = require(`./commands/${file}`);
     client.commands.set(command.name, command);
 }
-for (const file of algoFiles){
-    const algoFile = require(`./creditAlgo/${file}`);
-    console.log(`${algoFile} was imported.`);
-}
+
 async function logData(message){
     const user = await client.dbInstance.collection("users").findOne({ uuid: message.author.id})
     if (user == null){
