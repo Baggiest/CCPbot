@@ -21,7 +21,6 @@ async function logData(message){
         console.log("entry made to ",message.author.id)
         }
     else{
-    
     }
 }
 async function exeCommand(command, message, args) {
