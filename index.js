@@ -1,32 +1,43 @@
 const Discord = require('discord.js');
+const { badwords } = require("./files/badwords.json")
 const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILD_BANS, Discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS, Discord.Intents.FLAGS.GUILD_INTEGRATIONS, Discord.Intents.FLAGS.GUILD_WEBHOOKS, Discord.Intents.FLAGS.GUILD_PRESENCES, Discord.Intents.FLAGS.GUILD_MEMBERS, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Discord.Intents.FLAGS.DIRECT_MESSAGES, Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS] });
 const config = require('./config.json');
 const fs = require('fs');
+//const algoFile = require(`./creditAlgo/algorithm.js`);
+//console.log(`${algoFile} was imported.`); add these later on cuz idk how to pass message to different files
 var startTime = performance.now();
 client.commands = new Discord.Collection();
 const cooldowns = new Discord.Collection();
 const MongoClient = require('mongodb').MongoClient;
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const algoFiles = fs.readdirSync('./creditAlgo').filter(file => file.endsWith('.js'));
 client.prefix = config.prefix;
-for (const file of commandFiles) {
+for (const file of commandFiles){
     const command = require(`./commands/${file}`);
     client.commands.set(command.name, command);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+=======
+
+>>>>>>> c45a04953c97a940f655f9a8609db25fa81b0475
 async function logData(message){
     const user = await client.dbInstance.collection("users").findOne({ uuid: message.author.id})
     if (user == null){
         const china = { uuid: message.author.id, balance: 1000}
         client.dbInstance.collection("users").insertOne(china);
-        console.log("entry made to ",message.author.id)
-        }
+        console.log("entry made to ",message.author.name)
+    }
     else{
     
     }
+<<<<<<< HEAD
 }
 >>>>>>> 2ce8cad18fbe670fa3db7c16f12e9de172f43cfe
+=======
+>>>>>>> c45a04953c97a940f655f9a8609db25fa81b0475
 async function exeCommand(command, message, args) {
     await command.execute(message, args);
 }
@@ -81,16 +92,42 @@ client.on('messageCreate', async message => {
 
 =======
 let replies = { //autoreply system based on keywords
+    "kacper": "sugma"
 };
-client.on("messageCreate", async message => {
+client.on('messageCreate', async message => {
+    if (message.author.bot) return;
+    //START OF ALGO
+    if(!message.member.hasPermission("ADMINISTRATOR")){
+        let confirm = false;
+        //for loop
+        var i;
+        for(i = 0; i < badwords.length; i++){
+            if(message.content.toLowerCase().includes(badwords[i].toLowerCase()))
+            confirm = true;
+        }
+
+        if(confirm){
+            message.delete()
+            let amount = 10
+            const userid = message.author.id;
+            const userU = await message.client.dbInstance.collection('users').updateOne(
+                { uuid: userid },
+                {
+                    $inc: {balance: -amount}
+                }
+            );
+            console.log("User punished.", userid);
+            return message.channel.send("You are not allowed to send that word here.");
+        };
+    };
+    //END OF ALGO
     logData(message)
     if (message.content in replies) {
-        message.reply(replies[message.content]); //seperate client.on for let replies
+        message.reply(replies[message.content]);
         return;
-    }
-})
+        }
+    })
 
-client.on('messageCreate', async message => {
     if (!(message.content.startsWith(client.prefix) || message.mentions.users.first() == client.user) || message.author.bot) return;
     if (message.content.startsWith(client.prefix)) {
         args = message.content.slice(client.prefix.length).split(/ +/);
@@ -139,7 +176,7 @@ client.on('messageCreate', async message => {
         if (command.args && !args.length) {
             const commandhelp = client.commands.get("help");
             const argshelp = [command.name];
-            commandhelp.execute(message, argshelp)
+            commandhelp.execute(message, argshelp);
         } else {
             if (command.needsmod) {
                 let isMod = false;
@@ -153,21 +190,21 @@ client.on('messageCreate', async message => {
                     return;
                 } else {
                     exeCommand(command, message, args);
-                }
+                };
             } else if (command.needsadmin) {
                 if (currentMember.permissions.has(['ADMINISTRATOR']) || message.author.id == ownerID) {
                     exeCommand(command, message, args);
                     return;
                 } else {
-                }
+                };
             } else {
                 exeCommand(command, message, args);
-            }
-        }
+            };
+        };
     } catch (error) {
         console.error(`Command perms check: ${error}`);
         message.reply('there was an error trying to execute that command!');
-    }
+    };
 
 
-})
+};
