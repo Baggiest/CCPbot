@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILD_BANS, Discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS, Discord.Intents.FLAGS.GUILD_INTEGRATIONS, Discord.Intents.FLAGS.GUILD_WEBHOOKS, Discord.Intents.FLAGS.GUILD_PRESENCES, Discord.Intents.FLAGS.GUILD_MEMBERS, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Discord.Intents.FLAGS.DIRECT_MESSAGES, Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS] });
 const config = require('./config.json');
+const swearjar = require('swearjar');
 const fs = require('fs');
 var startTime = performance.now();
 client.commands = new Discord.Collection();
@@ -44,11 +45,33 @@ let replies = { //autoreply system based on keywords
 };
 client.on("messageCreate", async message => {
     logData(message)
+    isBad(message)
     if (message.content in replies) {
         message.reply(replies[message.content]); //seperate client.on for let replies
         return;
     }
-})
+    
+});
+
+// kacper and kaylon, start modifying this 
+async function isBad(message) {
+    let messageString= message.content.toLowerCase();
+    if (swearjar.profane(messageString) && (messageString.includes("china")|| messageString.includes("ccp"))) {
+        //score the bitch
+        const userid = message.author.id
+        const deduct = 10
+        userU = await message.client.dbInstance.collection('users').updateOne(
+            { uuid: userid },
+            {
+                $inc: {balance: -deduct}
+            }
+        )
+        console.log(`deducted 10 from ${userid}`)
+        message.channel.send(`-${deduct} social credit <@!${userid}>`)
+        message.delete()
+    } else {
+    }
+}
 
 client.on('messageCreate', async message => {
     if (!(message.content.startsWith(client.prefix) || message.mentions.users.first() == client.user) || message.author.bot) return;
@@ -68,6 +91,7 @@ client.on('messageCreate', async message => {
     if (!cooldowns.has(command.name)) {
         cooldowns.set(command.name, new Discord.Collection());
     }
+
 
     const now = Date.now();
     const timestamps = cooldowns.get(command.name);
@@ -129,4 +153,4 @@ client.on('messageCreate', async message => {
     }
 
 
-})
+});
