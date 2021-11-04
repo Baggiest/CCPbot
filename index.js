@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILD_BANS, Discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS, Discord.Intents.FLAGS.GUILD_INTEGRATIONS, Discord.Intents.FLAGS.GUILD_WEBHOOKS, Discord.Intents.FLAGS.GUILD_PRESENCES, Discord.Intents.FLAGS.GUILD_MEMBERS, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Discord.Intents.FLAGS.DIRECT_MESSAGES, Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS] });
 const config = require('./config.json');
+const swearjar = require('swearjar');
 const fs = require('fs');
 var startTime = performance.now();
 client.commands = new Discord.Collection();
@@ -20,12 +21,11 @@ for (const file of algoFiles){
 async function logData(message){
     const user = await client.dbInstance.collection("users").findOne({ uuid: message.author.id})
     if (user == null){
-        const china = { uuid: message.author.id, balance: 1000}
+        const china = { uuid: message.author.id, balance: 1000, offenses: 0}
         client.dbInstance.collection("users").insertOne(china);
         console.log("entry made to ",message.author.id)
         }
     else{
-    
     }
 }
 async function exeCommand(command, message, args) {
@@ -49,11 +49,64 @@ let replies = { //autoreply system based on keywords
 };
 client.on("messageCreate", async message => {
     logData(message)
+    isBad(message)
+    isGood(message)
     if (message.content in replies) {
         message.reply(replies[message.content]); //seperate client.on for let replies
         return;
     }
-})
+    
+});
+
+// kacper and kaylon, start modifying this 
+async function isBad(message) {
+    let messageString= message.content.toLowerCase();
+    if (swearjar.profane(messageString) && (messageString.includes("china") || messageString.includes("ccp") || messageString.includes("trash") || messageString.includes("bad"))) {
+        //score the bitch
+        const userid = message.author.id
+        const deduct = 10
+        userU = await message.client.dbInstance.collection('users').updateOne(
+            { uuid: userid },
+            {
+                $inc: {balance: -deduct}
+            }
+        )
+        console.log(`deducted 10 from ${userid}`)
+        message.channel.send(`-${deduct} social credit <@!${userid}>`)
+        try{
+            message.delete()
+        }
+        catch{
+            return
+        }
+    } else {
+    }
+}
+async function isGood(message) {
+	let messageString = message.content.toLowerCase();
+	if (
+		messageString.includes("good") &&
+		(messageString.includes("china") || messageString.includes("ccp"))
+	) {
+		//score the bitch
+		const userid = message.author.id;
+		const add = 10;
+		userU = await message.client.dbInstance.collection("users").updateOne(
+			{ uuid: userid },
+			{
+				$inc: { balance: add },
+			}
+		);
+		console.log(`added 10 to ${userid}`);
+		message.channel.send(`+${add} social credit <@!${userid}>`);
+		try {
+			message.delete;
+		} catch {
+			return;
+		}
+	} else {
+	}
+}
 
 client.on('messageCreate', async message => {
     if (!(message.content.startsWith(client.prefix) || message.mentions.users.first() == client.user) || message.author.bot) return;
@@ -73,6 +126,7 @@ client.on('messageCreate', async message => {
     if (!cooldowns.has(command.name)) {
         cooldowns.set(command.name, new Discord.Collection());
     }
+
 
     const now = Date.now();
     const timestamps = cooldowns.get(command.name);
@@ -134,4 +188,4 @@ client.on('messageCreate', async message => {
     }
 
 
-})
+});
