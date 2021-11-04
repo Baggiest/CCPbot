@@ -19,7 +19,6 @@ const config = require("./config.json");
 const swearjar = require("swearjar");
 const fs = require("fs");
 var startTime = performance.now();
-
 client.commands = new Discord.Collection();
 const cooldowns = new Discord.Collection();
 const MongoClient = require("mongodb").MongoClient;
