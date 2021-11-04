@@ -62,7 +62,7 @@ async function isBad(message) {
         const userid = message.author.id
         user = await message.client.dbInstance.collection('users').findOne({uuid:userid})
         nOffenses = user.offenses
-        console.log(nOffenses)
+        message.reply(nOffenses.toString())
         const deduct = 1;
         userU = await message.client.dbInstance.collection('users').updateOne(
             { uuid: userid },
