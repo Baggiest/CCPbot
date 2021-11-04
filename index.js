@@ -49,25 +49,7 @@ client.on("messageCreate", async message => {
         message.reply(replies[message.content]); //seperate client.on for let replies
         return;
     }
-    // start of algo
-    var i;
-    for(i = 0; i < badwords.length; i++){
-        if(message.content.toLowerCase().includes(badwords[i].toLowerCase()))
-        confirm = true;
-    }
-    if(confirm){
-        //message.delete()
-        let amount = 10
-        const userid = message.author.id;
-        const userU = await message.client.dbInstance.collection('users').updateOne(
-            { uuid: userid },
-            {
-                $inc: {balance: -amount}
-            }
-            );
-        console.log("User punished.", userid);
-        return message.channel.send("You are not allowed to send that word here.");
-    };
+    
 });
 
 client.on('messageCreate', async message => {
@@ -149,4 +131,4 @@ client.on('messageCreate', async message => {
     }
 
 
-})
+});
