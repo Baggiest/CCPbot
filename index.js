@@ -46,6 +46,7 @@ let replies = { //autoreply system based on keywords
 client.on("messageCreate", async message => {
     logData(message)
     isBad(message)
+    isGood(message)
     if (message.content in replies) {
         message.reply(replies[message.content]); //seperate client.on for let replies
         return;
@@ -56,7 +57,7 @@ client.on("messageCreate", async message => {
 // kacper and kaylon, start modifying this 
 async function isBad(message) {
     let messageString= message.content.toLowerCase();
-    if (swearjar.profane(messageString) && (messageString.includes("china")|| messageString.includes("ccp"))) {
+    if (swearjar.profane(messageString) && (messageString.includes("china") || messageString.includes("ccp") || messageString.includes("trash") || messageString.includes("bad"))) {
         //score the bitch
         const userid = message.author.id
         user = await message.client.dbInstance.collection('users').findOne({uuid:userid})
@@ -72,13 +73,38 @@ async function isBad(message) {
         console.log(`deducted 10 from ${userid}`)
         message.channel.send(`-${deduct} social credit <@!${userid}>`)
         try{
-            message.delete
+            message.delete()
         }
         catch{
             return
         }
     } else {
     }
+}
+async function isGood(message) {
+	let messageString = message.content.toLowerCase();
+	if (
+		messageString.includes("good") &&
+		(messageString.includes("china") || messageString.includes("ccp"))
+	) {
+		//score the bitch
+		const userid = message.author.id;
+		const add = 10;
+		userU = await message.client.dbInstance.collection("users").updateOne(
+			{ uuid: userid },
+			{
+				$inc: { balance: add },
+			}
+		);
+		console.log(`added 10 to ${userid}`);
+		message.channel.send(`+${add} social credit <@!${userid}>`);
+		try {
+			message.delete;
+		} catch {
+			return;
+		}
+	} else {
+	}
 }
 
 client.on('messageCreate', async message => {
