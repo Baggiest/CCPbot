@@ -15,7 +15,7 @@ for (const file of commandFiles){
 }
 for (const file of algoFiles){
     const algoFile = require(`./creditAlgo/${file}`);
-    client.commands.set(command.name, command); // THIS IS TO TEST IF IT IMPORTS, CHANGE LATER
+    console.log(`${algoFile} was imported.`);
 }
 async function logData(message){
     const user = await client.dbInstance.collection("users").findOne({ uuid: message.author.id})
