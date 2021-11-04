@@ -16,13 +16,7 @@ for (const file of commandFiles){
     const command = require(`./commands/${file}`);
     client.commands.set(command.name, command);
 }
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
-=======
-
->>>>>>> c45a04953c97a940f655f9a8609db25fa81b0475
+ HEAD
 async function logData(message){
     const user = await client.dbInstance.collection("users").findOne({ uuid: message.author.id})
     if (user == null){
@@ -33,11 +27,9 @@ async function logData(message){
     else{
     
     }
-<<<<<<< HEAD
+ HEAD
 }
->>>>>>> 2ce8cad18fbe670fa3db7c16f12e9de172f43cfe
-=======
->>>>>>> c45a04953c97a940f655f9a8609db25fa81b0475
+
 async function exeCommand(command, message, args) {
     await command.execute(message, args);
 }
@@ -56,7 +48,7 @@ client.once('ready', async () => {
     var totalTime=endTime-startTime;
     console.log("bot took "+totalTime +"ms to load")
 });
-<<<<<<< HEAD
+
 
 client.once('ready', async () => {console.log("bot started");
     });
@@ -90,7 +82,6 @@ client.on('messageCreate', async message => {
     if (timestamps.has(message.author.id)) {
         const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
 
-=======
 let replies = { //autoreply system based on keywords
     "kacper": "sugma"
 };
@@ -153,7 +144,7 @@ client.on('messageCreate', async message => {
     if (timestamps.has(message.author.id)) {
         const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
 
->>>>>>> 2ce8cad18fbe670fa3db7c16f12e9de172f43cfe
+
         if (now < expirationTime) {
             const timeLeft = (expirationTime - now) / 1000;
             return message.reply(`please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.`)
@@ -205,6 +196,3 @@ client.on('messageCreate', async message => {
         console.error(`Command perms check: ${error}`);
         message.reply('there was an error trying to execute that command!');
     };
-
-
-};
