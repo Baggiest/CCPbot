@@ -21,12 +21,11 @@ async function logData(message){
     if (user == null){
         const china = { uuid: message.author.id, balance: 1000}
         client.dbInstance.collection("users").insertOne(china);
-        console.log("entry made to ",message.author.id)
-        }
+        console.log("entry made to ",message.author.name)
+    }
     else{
     
     }
-}
 async function exeCommand(command, message, args) {
     await command.execute(message, args);
 }    
@@ -45,16 +44,15 @@ client.once('ready', async () => {
     console.log("bot took "+totalTime +"ms to load")
 });
 let replies = { //autoreply system based on keywords
+    "kacper": "sugma"
 };
-client.on("messageCreate", async message => {
+client.on('messageCreate', async message => {
     logData(message)
     if (message.content in replies) {
         message.reply(replies[message.content]); //seperate client.on for let replies
         return;
-    }
-})
-
-client.on('messageCreate', async message => {
+        }
+    })
     if (!(message.content.startsWith(client.prefix) || message.mentions.users.first() == client.user) || message.author.bot) return;
     if (message.content.startsWith(client.prefix)) {
         args = message.content.slice(client.prefix.length).split(/ +/);
@@ -102,7 +100,7 @@ client.on('messageCreate', async message => {
         if (command.args && !args.length) {
             const commandhelp = client.commands.get("help");
             const argshelp = [command.name];
-            commandhelp.execute(message, argshelp)
+            commandhelp.execute(message, argshelp);
         } else {
             if (command.needsmod) {
                 let isMod = false;
@@ -116,21 +114,21 @@ client.on('messageCreate', async message => {
                     return;
                 } else {
                     exeCommand(command, message, args);
-                }
+                };
             } else if (command.needsadmin) {
                 if (currentMember.permissions.has(['ADMINISTRATOR']) || message.author.id == ownerID) {
                     exeCommand(command, message, args);
                     return;
                 } else {
-                }
+                };
             } else {
                 exeCommand(command, message, args);
-            }
-        }
+            };
+        };
     } catch (error) {
         console.error(`Command perms check: ${error}`);
         message.reply('there was an error trying to execute that command!');
-    }
+    };
 
 
-})
+};
