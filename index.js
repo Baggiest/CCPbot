@@ -1,5 +1,4 @@
 const Discord = require('discord.js');
-const { badwords } = require("./files/badwords.json")
 const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILD_BANS, Discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS, Discord.Intents.FLAGS.GUILD_INTEGRATIONS, Discord.Intents.FLAGS.GUILD_WEBHOOKS, Discord.Intents.FLAGS.GUILD_PRESENCES, Discord.Intents.FLAGS.GUILD_MEMBERS, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Discord.Intents.FLAGS.DIRECT_MESSAGES, Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS] });
 const config = require('./config.json');
 const fs = require('fs');
@@ -10,13 +9,18 @@ client.commands = new Discord.Collection();
 const cooldowns = new Discord.Collection();
 const MongoClient = require('mongodb').MongoClient;
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-const algoFiles = fs.readdirSync('./creditAlgo').filter(file => file.endsWith('.js'));
+//const algoFiles = fs.readdirSync('./creditAlgo').filter(file => file.endsWith('.js'));
+const { badwords } = require("./files/badwords.json")
 client.prefix = config.prefix;
 for (const file of commandFiles){
     const command = require(`./commands/${file}`);
     client.commands.set(command.name, command);
 }
-
+client.once('ready', async () => {
+    var endTime = performance.now();
+    var totalTime=endTime-startTime;
+    console.log("bot took "+totalTime +"ms to load")
+});
 async function logData(message){
     const user = await client.dbInstance.collection("users").findOne({ uuid: message.author.id})
     if (user == null){
@@ -39,11 +43,6 @@ async function databaseConnect(){
 }); 
 }
 databaseConnect()
-client.once('ready', async () => {
-    var endTime = performance.now();
-    var totalTime=endTime-startTime;
-    console.log("bot took "+totalTime +"ms to load")
-});
 let replies = { //autoreply system based on keywords
     "kacper": "sugma"
 };
@@ -60,7 +59,7 @@ client.on('messageCreate', async message => {
         }
 
         if(confirm){
-            message.delete()
+            //message.delete()
             let amount = 10
             const userid = message.author.id;
             const userU = await message.client.dbInstance.collection('users').updateOne(
