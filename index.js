@@ -21,7 +21,7 @@ for (const file of commandFiles){
 async function logData(message){
     const user = await client.dbInstance.collection("users").findOne({ uuid: message.author.id})
     if (user == null){
-        const china = { uuid: message.author.id, balance: 1000}
+        const china = { uuid: message.author.id, balance: 1000, offenses: 0}
         client.dbInstance.collection("users").insertOne(china);
         console.log("entry made to ",message.author.name)
     }
