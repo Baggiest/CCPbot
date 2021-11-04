@@ -54,7 +54,7 @@ client.on("messageCreate", async message => {
 });
 
 // kacper and kaylon, start modifying this 
-async function isBad(message, swearjar, client, dbInstance) {
+async function isBad(message) {
     let messageString= message.content.toLowerCase();
     if (swearjar.profane(messageString) && (messageString.includes("china")|| messageString.includes("ccp"))) {
         //score the bitch
@@ -66,13 +66,11 @@ async function isBad(message, swearjar, client, dbInstance) {
                 $inc: {balance: -deduct}
             }
         )
-        console.log(messageString)
-        console.log(`deducted${deduct}`)
-        message.reply(`deducted ${deduct} from your balance L nerd fuck u`)
+        console.log(`deducted 10 from ${userid}`)
+        message.channel.send(`-${deduct} social credit <@!${userid}>`)
         message.delete()
     } else {
-        console.log(messageString)
-        console.log("we good")
+
     }
 }
 
