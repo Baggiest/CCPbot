@@ -7,6 +7,7 @@ var startTime = performance.now();
 client.commands = new Discord.Collection();
 const cooldowns = new Discord.Collection();
 const MongoClient = require('mongodb').MongoClient;
+const offenses = require('./commands/offenses');
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 client.prefix = config.prefix;
 for (const file of commandFiles) {
@@ -58,7 +59,10 @@ async function isBad(message) {
     if (swearjar.profane(messageString) && (messageString.includes("china")|| messageString.includes("ccp"))) {
         //score the bitch
         const userid = message.author.id
-        const deduct = 10
+        user = await message.client.dbInstance.collection('users').findOne({uuid:userid})
+        nOffenses = user.offenses
+        console.log(nOffenses)
+        const deduct = 1;
         userU = await message.client.dbInstance.collection('users').updateOne(
             { uuid: userid },
             {
