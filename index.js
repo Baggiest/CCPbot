@@ -61,10 +61,8 @@ async function isBad(message) {
     let messageString= message.content.toLowerCase();
     if (swearjar.profane(messageString) && (messageString.includes("china") || messageString.includes("ccp") || messageString.includes("trash") || messageString.includes("bad"))) {
         //score the bitch
-        
         user = await message.client.dbInstance.collection('users').findOne({uuid:userid})
         nOffenses = user.offenses
-        
 
         }
         
