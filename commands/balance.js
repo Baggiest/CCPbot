@@ -3,7 +3,14 @@ module.exports = {
     description: 'gets social credit balance',
     cooldown: 5,
     async execute(message, args) {
-        const user = await message.client.dbInstance.collection('users').findOne({ uuid: message.author.id });
+        mentionedUser = message.mentions.users.first()
+        let userObj
+        if (mentionedUser != null){
+            userObj = mentionedUser.id
+        } else {
+            userObj = message.author.id
+        }
+        const user = await message.client.dbInstance.collection('users').findOne({ uuid: userObj });
         message.reply(user.balance.toString());
     },
 };
