@@ -70,7 +70,6 @@ async function isBad(message) {
         message.channel.send(`-${deduct} social credit <@!${userid}>`)
         message.delete()
     } else {
-
     }
 }
 
