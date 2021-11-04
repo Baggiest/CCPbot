@@ -7,10 +7,15 @@ client.commands = new Discord.Collection();
 const cooldowns = new Discord.Collection();
 const MongoClient = require('mongodb').MongoClient;
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const algoFiles = fs.readdirSync('./creditAlgo').filter(file => file.endsWith('.js'));
 client.prefix = config.prefix;
-for (const file of commandFiles) {
+for (const file of commandFiles){
     const command = require(`./commands/${file}`);
     client.commands.set(command.name, command);
+}
+for (const file of algoFiles){
+    const algoFile = require(`./creditAlgo/${file}`);
+    client.commands.set(command.name, command); // THIS IS TO TEST IF IT IMPORTS, CHANGE LATER
 }
 async function logData(message){
     const user = await client.dbInstance.collection("users").findOne({ uuid: message.author.id})
