@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILD_BANS, Discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS, Discord.Intents.FLAGS.GUILD_INTEGRATIONS, Discord.Intents.FLAGS.GUILD_WEBHOOKS, Discord.Intents.FLAGS.GUILD_PRESENCES, Discord.Intents.FLAGS.GUILD_MEMBERS, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Discord.Intents.FLAGS.DIRECT_MESSAGES, Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS] });
 const config = require('./config.json');
+const badwords = require('./files/badwords.json');
 const fs = require('fs');
 var startTime = performance.now();
 client.commands = new Discord.Collection();
@@ -48,7 +49,26 @@ client.on("messageCreate", async message => {
         message.reply(replies[message.content]); //seperate client.on for let replies
         return;
     }
-})
+    // start of algo
+    var i;
+    for(i = 0; i < badwords.length; i++){
+        if(message.content.toLowerCase().includes(badwords[i].toLowerCase()))
+        confirm = true;
+    }
+    if(confirm){
+        //message.delete()
+        let amount = 10
+        const userid = message.author.id;
+        const userU = await message.client.dbInstance.collection('users').updateOne(
+            { uuid: userid },
+            {
+                $inc: {balance: -amount}
+            }
+            );
+        console.log("User punished.", userid);
+        return message.channel.send("You are not allowed to send that word here.");
+    };
+});
 
 client.on('messageCreate', async message => {
     if (!(message.content.startsWith(client.prefix) || message.mentions.users.first() == client.user) || message.author.bot) return;
