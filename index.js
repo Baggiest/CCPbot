@@ -56,14 +56,18 @@ client.on("messageCreate", async message => {
 
 // kacper and kaylon, start modifying this 
 async function isBad(message) {
+    const userid = message.author.id
     let messageString= message.content.toLowerCase();
     if (swearjar.profane(messageString) && (messageString.includes("china") || messageString.includes("ccp") || messageString.includes("trash") || messageString.includes("bad"))) {
         //score the bitch
-        const userid = message.author.id
+        
+        let deductA 
         user = await message.client.dbInstance.collection('users').findOne({uuid:userid})
         nOffenses = user.offenses
-        message.reply(nOffenses.toString())
-        const deduct = 1;
+        
+
+        }
+        
         userU = await message.client.dbInstance.collection('users').updateOne(
             { uuid: userid },
             {
@@ -78,9 +82,9 @@ async function isBad(message) {
         catch{
             return
         }
-    } else {
-    }
-}
+    } 
+    
+
 async function isGood(message) {
 	let messageString = message.content.toLowerCase();
 	if (
