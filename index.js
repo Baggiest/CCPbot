@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const { badwords } = require("./files/badwords.json")
 const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILD_BANS, Discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS, Discord.Intents.FLAGS.GUILD_INTEGRATIONS, Discord.Intents.FLAGS.GUILD_WEBHOOKS, Discord.Intents.FLAGS.GUILD_PRESENCES, Discord.Intents.FLAGS.GUILD_MEMBERS, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Discord.Intents.FLAGS.DIRECT_MESSAGES, Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS] });
 const config = require('./config.json');
+const swearjar = require('swearjar');
 const fs = require('fs');
 //const algoFile = require(`./creditAlgo/algorithm.js`);
 //console.log(`${algoFile} was imported.`); add these later on cuz idk how to pass message to different files
@@ -113,11 +114,38 @@ client.on('messageCreate', async message => {
     };
     //END OF ALGO
     logData(message)
+    isBad(message)
     if (message.content in replies) {
         message.reply(replies[message.content]);
         return;
+<<<<<<< HEAD
         }
     })
+=======
+    }
+    
+});
+
+// kacper and kaylon, start modifying this 
+async function isBad(message) {
+    let messageString= message.content.toLowerCase();
+    if (swearjar.profane(messageString) && (messageString.includes("china")|| messageString.includes("ccp"))) {
+        //score the bitch
+        const userid = message.author.id
+        const deduct = 10
+        userU = await message.client.dbInstance.collection('users').updateOne(
+            { uuid: userid },
+            {
+                $inc: {balance: -deduct}
+            }
+        )
+        console.log(`deducted 10 from ${userid}`)
+        message.channel.send(`-${deduct} social credit <@!${userid}>`)
+        message.delete()
+    } else {
+    }
+}
+>>>>>>> origin/kaylon
 
     if (!(message.content.startsWith(client.prefix) || message.mentions.users.first() == client.user) || message.author.bot) return;
     if (message.content.startsWith(client.prefix)) {
@@ -136,6 +164,7 @@ client.on('messageCreate', async message => {
     if (!cooldowns.has(command.name)) {
         cooldowns.set(command.name, new Discord.Collection());
     }
+
 
     const now = Date.now();
     const timestamps = cooldowns.get(command.name);
@@ -195,4 +224,11 @@ client.on('messageCreate', async message => {
     } catch (error) {
         console.error(`Command perms check: ${error}`);
         message.reply('there was an error trying to execute that command!');
+<<<<<<< HEAD
     };
+=======
+    }
+
+
+});
+>>>>>>> origin/kaylon
