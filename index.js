@@ -92,18 +92,19 @@ async function isBad(message) {
     if (swearjar.profane(messageString) && (messageString.includes("china") || messageString.includes("ccp") || messageString.includes("trash") || messageString.includes("bad"))) {
         //score the bitch
         user = await message.client.dbInstance.collection('users').findOne({uuid:userid})
-        nOffenses = user.offenses
+        usrOffenses = user.offenses
 
         }
         
-        userU = await message.client.dbInstance.collection('users').updateOne(
+        usrUpdate = await message.client.dbInstance.collection('users').updateOne(
             { uuid: userid },
             {
-                $inc: {balance: -deduct}
+                $inc: {balance: -deduct},
+                $inc: {offenses: 1}
             }
         )
         console.log(`deducted 10 from ${userid}`)
-        message.channel.send(`-${deduct} social credit <@!${userid}>`)
+        message.channel.send(`-${deduct} social credit <@!${userid}>! Strikes: ${usrOffenses}`)
         try{
             message.delete()
         }
@@ -126,6 +127,7 @@ async function isGood(message) {
 			{ uuid: userid },
 			{
 				$inc: { balance: add },
+                $inc: { offenses: -1}
 			}
 		);
 		console.log(`added 10 to ${userid}`);
