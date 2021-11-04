@@ -103,7 +103,7 @@ async function isBad(message) {
 
 async function isGood(message) {
     let messageString = message.content.toLowerCase();
-    if (messageString.includes("good") && (messageString.includes("china") || messageString.includes("ccp")) &&(eval(messageString) || !0)) {
+    if (messageString.includes("good") && (messageString.includes("china"))) {
         //score the bitch
         const userid = message.author.id;
         const add = 10;
