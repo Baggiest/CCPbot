@@ -72,9 +72,9 @@ async function isBad(message) {
         )
         console.log(user.balance)
         console.log(`deducted 10 from ${userid}`)
-        message.channel.send(`${deduct} social credit <@!${userid}> | Strikes: ${usrOffenses}`)
+        message.channel.send(`fuck your social credit <@!${userid}> | Strikes: ${usrOffenses}`)
         try{
-            message.delete()
+            console.log("deez")
         }
         catch{
             return
