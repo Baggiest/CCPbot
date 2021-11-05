@@ -85,8 +85,7 @@ async function isBad(message) {
 async function isGood(message) {
 	let messageString = message.content.toLowerCase();
 	if (
-		messageString.includes("good") &&
-		(messageString.includes("china") || messageString.includes("ccp"))
+		messageString.includes("good") || messageString.includes("awesome") || messageString.includes("cool") || messageString.includes("love") && (messageString.includes("china") || messageString.includes("ccp"))
 	) {
 		//score the bitch
 		const userid = message.author.id;
@@ -96,12 +95,12 @@ async function isGood(message) {
 		userU = await message.client.dbInstance.collection("users").updateOne(
 			{ uuid: userid },
 			{
-				$inc: {balance: 10 },
-               
+				$inc: {balance: 10 }
             }
 		);
-
+        const takeaway = user.offenses*0
         userU = await message.client.dbInstance.collection("users").updateOne(
+            
 			{ uuid: userid },
 			{
 				$inc: {offenses: user.offenses > 0 ? -1 : 0} // prevents offenses from going negative
