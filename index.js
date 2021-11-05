@@ -111,7 +111,7 @@ async function isGood(message) {
 		console.log(`added 10 to ${userid}`);
 		message.channel.send(`+10 social credit <@!${userid}>`);
 		try {
-			message.delete;
+			//message.delete; this is the actual line between censorship and joking
 		} catch {
 			return;
 		}
