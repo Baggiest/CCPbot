@@ -92,11 +92,7 @@ async function isGood(message) {
 		const userid = message.author.id;
         let user = await message.client.dbInstance.collection('users').findOne({uuid:userid});
         const uOffneses = user.offenses
-        if(uOffneses < 0) {
-
-            userU = await message.client.dbInstance.collection("users").updateOne(
-                { uuid: userid }, {$set: {offenses: 0 }})
-        }
+        // super fucking scuff code, dont touch unless you know how to make it better
 		userU = await message.client.dbInstance.collection("users").updateOne(
 			{ uuid: userid },
 			{
@@ -108,7 +104,7 @@ async function isGood(message) {
         userU = await message.client.dbInstance.collection("users").updateOne(
 			{ uuid: userid },
 			{
-				$inc: {offenses: -1 },
+				$inc: {offenses: user.offenses > 0 ? -1 : 0} // prevents offenses from going negative
                
             }
 		);
