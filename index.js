@@ -61,10 +61,9 @@ async function isBad(message) {
     const userid = message.author.id
     let messageString= message.content.toLowerCase();
     if (swearjar.profane(messageString) && (messageString.includes("china")||messageString.includes("ccp")||messageString.includes("trash")||messageString.includes("bad"))) {
-        //score the bitch
         let user = await message.client.dbInstance.collection('users').findOne({uuid:userid});
-        let usrOffenses = user.offenses+1;
-        let deduct = 10*(usrOffenses > 5 ? 5 : usrOffenses);
+        let usrOffenses = user.offenses+1; // adds one to include new strike in deduction
+        let deduct = 10*(usrOffenses > 5 ? 5 : usrOffenses); // multipler caps at 5 strikes
         
         userU = await message.client.dbInstance.collection('users').updateOne(
             { uuid: userid },
@@ -99,7 +98,7 @@ async function isGood(message) {
 			{ uuid: userid },
 			{
 				$inc: { balance: add },
-                $inc: {offenses: usrOffenses > 0 ? -1 : 0} //doesn't go negative offenses
+                $inc: {offenses: usrOffenses > 0 ? -1 : 0} // prevents offenses from going negative
             }
 		);
 		console.log(`added 10 to ${userid}`);
