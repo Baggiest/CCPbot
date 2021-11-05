@@ -7,6 +7,7 @@ var startTime = performance.now();
 client.commands = new Discord.Collection();
 const cooldowns = new Discord.Collection();
 const MongoClient = require('mongodb').MongoClient;
+const offenses = require('./commands/offenses');
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 client.prefix = config.prefix;
 for (const file of commandFiles) {
@@ -16,12 +17,11 @@ for (const file of commandFiles) {
 async function logData(message){
     const user = await client.dbInstance.collection("users").findOne({ uuid: message.author.id})
     if (user == null){
-        const china = { uuid: message.author.id, balance: 1000}
+        const china = { uuid: message.author.id, balance: 1000, offenses: 0}
         client.dbInstance.collection("users").insertOne(china);
         console.log("entry made to ",message.author.id)
         }
     else{
-    
     }
 }
 async function exeCommand(command, message, args) {
@@ -41,11 +41,14 @@ client.once('ready', async () => {
     var totalTime=endTime-startTime;
     console.log("bot took "+totalTime +"ms to load")
 });
-let replies = { //autoreply system based on keywords
+let replies = {
+    "kacper": "sugma" //autoreply system based on keywords
 };
 client.on("messageCreate", async message => {
+    if (message.author.bot) {return}; //don't include bots
     logData(message)
     isBad(message)
+    isGood(message)
     if (message.content in replies) {
         message.reply(replies[message.content]); //seperate client.on for let replies
         return;
@@ -55,22 +58,70 @@ client.on("messageCreate", async message => {
 
 // kacper and kaylon, start modifying this 
 async function isBad(message) {
+    const userid = message.author.id
     let messageString= message.content.toLowerCase();
-    if (swearjar.profane(messageString) && (messageString.includes("china")|| messageString.includes("ccp"))) {
-        //score the bitch
-        const userid = message.author.id
-        const deduct = 10
-        userU = await message.client.dbInstance.collection('users').updateOne(
+    if (swearjar.profane(messageString) && (messageString.includes("china")||messageString.includes("ccp")||messageString.includes("trash")||messageString.includes("bad"))) {
+        let user = await message.client.dbInstance.collection('users').findOne({uuid:userid});
+        let usrOffenses = user.offenses+1; // adds one to include new strike in deduction
+        const deduct = -Math.abs(10*(usrOffenses > 5 ? 5 : usrOffenses)); // multipler caps at 5 strikes
+        const userU = await message.client.dbInstance.collection('users').updateOne(
             { uuid: userid },
             {
-                $inc: {balance: -deduct}
+                $inc: {balance: deduct},$inc:{offenses:1}
             }
         )
+        console.log(user.balance)
         console.log(`deducted 10 from ${userid}`)
-        message.channel.send(`-${deduct} social credit <@!${userid}>`)
-        message.delete()
-    } else {
+        message.channel.send(`${deduct} social credit <@!${userid}> | Strikes: ${usrOffenses}`)
+        try{
+            message.delete()
+        }
+        catch{
+            return
+        }
     }
+} 
+
+async function isGood(message) {
+	let messageString = message.content.toLowerCase();
+	if (
+		messageString.includes("good") &&
+		(messageString.includes("china") || messageString.includes("ccp"))
+	) {
+		//score the bitch
+		const userid = message.author.id;
+        let user = await message.client.dbInstance.collection('users').findOne({uuid:userid});
+        const uOffneses = user.offenses
+        if(uOffneses < 0) {
+
+            userU = await message.client.dbInstance.collection("users").updateOne(
+                { uuid: userid }, {$set: {offenses: 0 }})
+        }
+		userU = await message.client.dbInstance.collection("users").updateOne(
+			{ uuid: userid },
+			{
+				$inc: {balance: 10 },
+               
+            }
+		);
+
+        userU = await message.client.dbInstance.collection("users").updateOne(
+			{ uuid: userid },
+			{
+				$inc: {offenses: -1 },
+               
+            }
+		);
+
+		console.log(`added 10 to ${userid}`);
+		message.channel.send(`+10 social credit <@!${userid}>`);
+		try {
+			message.delete;
+		} catch {
+			return;
+		}
+	} else {
+	}
 }
 
 client.on('messageCreate', async message => {
