@@ -1,7 +1,7 @@
 const { SystemChannelFlags } = require("discord.js")
 
 module.exports = {
-    name: 'delbal',
+    name: 'addbal',
     description: 'gets social credit balance',
     cooldown: 5,
     async execute(message, args) {
@@ -19,7 +19,7 @@ module.exports = {
                 }
             )
             const userB = await message.client.dbInstance.collection('users').findOne({ uuid: userid });
-            message.reply(`Balance depleted to: ${userB.balance} from ${userB_OLD.balance}`);
+            message.reply(`Balance incremented to: ${userB.balance} from ${userB_OLD.balance}`);
             {
     }
         }
