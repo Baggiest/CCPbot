@@ -91,7 +91,7 @@ async function isGood(message) {
 		const userid = message.author.id;
         let user = await message.client.dbInstance.collection('users').findOne({uuid:userid});
         const uOffneses = user.offenses
-        // super fucking scuff code, dont touch unless you know how to make it better
+        // super fucking scuff code, dont touch unless you know how to make it better | this is real youre just dumb bag
 		userU = await message.client.dbInstance.collection("users").updateOne(
 			{ uuid: userid },
 			{
