@@ -3,35 +3,27 @@ const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Disc
 const config = require('./config.json');
 const swearjar = require('swearjar');
 const fs = require('fs');
-//const algoFile = require(`./creditAlgo/algorithm.js`);
-//console.log(`${algoFile} was imported.`); add these later on cuz idk how to pass message to different files
 var startTime = performance.now();
 client.commands = new Discord.Collection();
 const cooldowns = new Discord.Collection();
 const MongoClient = require('mongodb').MongoClient;
 const offenses = require('./commands/offenses');
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-//const algoFiles = fs.readdirSync('./creditAlgo').filter(file => file.endsWith('.js'));
-const { badwords } = require("./files/badwords.json")
 client.prefix = config.prefix;
-for (const file of commandFiles){
+for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
     client.commands.set(command.name, command);
 }
-client.once('ready', async () => {
-    var endTime = performance.now();
-    var totalTime=endTime-startTime;
-    console.log("bot took "+totalTime +"ms to load")
-});
 async function logData(message){
     const user = await client.dbInstance.collection("users").findOne({ uuid: message.author.id})
     if (user == null){
         const china = { uuid: message.author.id, balance: 1000, offenses: 0}
         client.dbInstance.collection("users").insertOne(china);
-        console.log("entry made to ",message.author.name)
-    }
+        console.log("entry made to ",message.author.id)
+        }
     else{
     }
+}
 async function exeCommand(command, message, args) {
     await command.execute(message, args);
 }    
@@ -44,41 +36,21 @@ async function databaseConnect(){
 }); 
 }
 databaseConnect()
-let replies = { //autoreply system based on keywords
-    "kacper": "sugma"
+client.once('ready', async () => {
+    var endTime = performance.now();
+    var totalTime=endTime-startTime;
+    console.log("bot took "+totalTime +"ms to load")
+});
+let replies = {
+    "kacper": "sugma" //autoreply system based on keywords
 };
-client.on('messageCreate', async message => {
-    if (message.author.bot) return;
-    //START OF ALGO
-    if(!message.member.hasPermission("ADMINISTRATOR")){
-        let confirm = false;
-        //for loop
-        var i;
-        for(i = 0; i < badwords.length; i++){
-            if(message.content.toLowerCase().includes(badwords[i].toLowerCase()))
-            confirm = true;
-        }
-
-        if(confirm){
-            //message.delete()
-            let amount = 10
-            const userid = message.author.id;
-            const userU = await message.client.dbInstance.collection('users').updateOne(
-                { uuid: userid },
-                {
-                    $inc: {balance: -amount},
-                }
-            );
-            console.log("User punished.", userid);
-            return message.channel.send("You are not allowed to send that word here.");
-        };
-    };
-    //END OF ALGO
+client.on("messageCreate", async message => {
+    if (message.author.bot) {return}; //don't include bots
     logData(message)
     isBad(message)
     isGood(message)
     if (message.content in replies) {
-        message.reply(replies[message.content]);
+        message.reply(replies[message.content]); //seperate client.on for let replies
         return;
     }
     
@@ -87,32 +59,30 @@ client.on('messageCreate', async message => {
 // kacper and kaylon, start modifying this 
 async function isBad(message) {
     const userid = message.author.id
-    const deduct = 10;
     let messageString= message.content.toLowerCase();
-    if (swearjar.profane(messageString) && (messageString.includes("china") || messageString.includes("ccp") || messageString.includes("trash") || messageString.includes("bad"))) {
+    if (swearjar.profane(messageString) && (messageString.includes("china")||messageString.includes("ccp")||messageString.includes("trash")||messageString.includes("bad"))) {
         //score the bitch
-        user = await message.client.dbInstance.collection('users').findOne({uuid:userid})
-        usrOffenses = user.offenses
-
-        }
+        let user = await message.client.dbInstance.collection('users').findOne({uuid:userid});
+        let usrOffenses = user.offenses+1;
+        let deduct = 10*(usrOffenses)
         
-        usrUpdate = await message.client.dbInstance.collection('users').updateOne(
+        userU = await message.client.dbInstance.collection('users').updateOne(
             { uuid: userid },
             {
-                $inc: {balance: -(deduct**(usrOffenses ? usrOffenses : 1))},
-                $inc: {offenses: 1}
+                $inc: {balance: -(deduct)},
+                $inc: {offenses: 1} 
             }
         )
         console.log(`deducted 10 from ${userid}`)
-        message.channel.send(`-${deduct} social credit <@!${userid}>! Strikes: ${usrOffenses}`)
+        message.channel.send(`-${deduct} social credit <@!${userid}> | Strikes: ${usrOffenses}`)
         try{
             message.delete()
         }
         catch{
             return
         }
-    } 
-    
+    }
+} 
 
 async function isGood(message) {
 	let messageString = message.content.toLowerCase();
@@ -123,12 +93,14 @@ async function isGood(message) {
 		//score the bitch
 		const userid = message.author.id;
 		const add = 10;
+        let user = await message.client.dbInstance.collection('users').findOne({uuid:userid});
+        let usrOffenses = user.offenses;
 		userU = await message.client.dbInstance.collection("users").updateOne(
 			{ uuid: userid },
 			{
 				$inc: { balance: add },
-                $inc: { offenses: -1}
-			}
+                $inc: {offenses: usrOffenses > 0 ? -1 : 0} //doesn't go negative offenses
+            }
 		);
 		console.log(`added 10 to ${userid}`);
 		message.channel.send(`+${add} social credit <@!${userid}>`);
@@ -141,6 +113,7 @@ async function isGood(message) {
 	}
 }
 
+client.on('messageCreate', async message => {
     if (!(message.content.startsWith(client.prefix) || message.mentions.users.first() == client.user) || message.author.bot) return;
     if (message.content.startsWith(client.prefix)) {
         args = message.content.slice(client.prefix.length).split(/ +/);
@@ -189,7 +162,7 @@ async function isGood(message) {
         if (command.args && !args.length) {
             const commandhelp = client.commands.get("help");
             const argshelp = [command.name];
-            commandhelp.execute(message, argshelp);
+            commandhelp.execute(message, argshelp)
         } else {
             if (command.needsmod) {
                 let isMod = false;
@@ -203,21 +176,21 @@ async function isGood(message) {
                     return;
                 } else {
                     exeCommand(command, message, args);
-                };
+                }
             } else if (command.needsadmin) {
                 if (currentMember.permissions.has(['ADMINISTRATOR']) || message.author.id == ownerID) {
                     exeCommand(command, message, args);
                     return;
                 } else {
-                };
+                }
             } else {
                 exeCommand(command, message, args);
-            };
-        };
+            }
+        }
     } catch (error) {
         console.error(`Command perms check: ${error}`);
         message.reply('there was an error trying to execute that command!');
-    };
+    }
 
 
-};
+});
