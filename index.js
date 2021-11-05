@@ -67,14 +67,14 @@ async function isBad(message) {
         const userU = await message.client.dbInstance.collection('users').updateOne(
             { uuid: userid },
             {
-                $inc: {balance: deduct},$inc:{offenses:1}
+                $inc: {balance: deduct, offenses: 1} //thanks kacper, qusai L
             }
         )
         console.log(user.balance)
         console.log(`deducted 10 from ${userid}`)
-        message.channel.send(`${deduct} social credit <@!${userid}> | Strikes: ${usrOffenses}`)
+        message.channel.send(`fuck your social credit <@!${userid}> | Strikes: ${usrOffenses}`)
         try{
-            message.delete()
+            console.log("deez")
         }
         catch{
             return
