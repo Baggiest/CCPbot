@@ -1,101 +1,25 @@
-<<<<<<< HEAD
 {
   "name": "ccpbot",
   "version": "1.0.0",
   "description": "welcome aboard \r made by Degen corp LLC",
   "main": "index.js",
   "scripts": {
-    "format": "prettier --write \"**/*.js\"",
-    "lint": "eslint \"!(dist|node_modules)/**/*.js\" --fix"
+      "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MrBaggieBug/CCPbot.git"
+      "type": "git",
+      "url": "git+https://github.com/MrBaggieBug/CCPbot.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/MrBaggieBug/CCPbot/issues"
+      "url": "https://github.com/MrBaggieBug/CCPbot/issues"
   },
   "homepage": "https://github.com/MrBaggieBug/CCPbot#readme",
   "dependencies": {
-    "discord.js": "^13.3.0",
-    "latest": "^0.2.0",
-    "mongodb": "^4.1.3",
-    "stable": "^0.1.8"
-  },
-  "devDependencies": {
-    "eslint": "^8.1.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "prettier": "^2.4.1"
-  }
-}
-=======
-{
-<<<<<<< HEAD
-    "name": "ccpbot",
-    "version": "1.0.0",
-    "description": "welcome aboard \r made by Degen corp LLC",
-    "main": "index.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/MrBaggieBug/CCPbot.git"
-    },
-    "author": "",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/MrBaggieBug/CCPbot/issues"
-    },
-    "homepage": "https://github.com/MrBaggieBug/CCPbot#readme",
-    "dependencies": {
-<<<<<<< HEAD
-<<<<<<< Updated upstream
+      "bad-words": "^3.0.4",
       "discord.js": "^13.3.0",
-      "mongodb": "^4.1.3"
-    }
-  }
->>>>>>> 2ce8cad18fbe670fa3db7c16f12e9de172f43cfe
-=======
-  "name": "ccpbot",
-  "version": "1.0.0",
-  "description": "welcome aboard \r made by Degen corp LLC",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MrBaggieBug/CCPbot.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/MrBaggieBug/CCPbot/issues"
-  },
-  "homepage": "https://github.com/MrBaggieBug/CCPbot#readme",
-  "dependencies": {
-    "discord.js": "^13.3.1",
-    "mongodb": "^4.1.4"
+      "mongodb": "^4.1.3",
+      "swearjar": "^0.2.0"
   }
 }
->>>>>>> c45a04953c97a940f655f9a8609db25fa81b0475
-=======
-        "bad-words": "^3.0.4",
-        "discord.js": "^13.3.0",
-        "mongodb": "^4.1.4",
-        "swearjar": "^0.2.0"
-    }
-}
->>>>>>> Stashed changes
-=======
-        "bad-words": "^3.0.4",
-        "discord.js": "^13.3.0",
-        "mongodb": "^4.1.3",
-        "swearjar": "^0.2.0"
-    }
-}
->>>>>>> origin/kaylon

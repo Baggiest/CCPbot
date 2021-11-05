@@ -1,0 +1,10 @@
+{
+  "token": "token",
+  "prefix": "prefix",
+  "database": {
+    "URL": "url",
+    "username": "username",
+    "password": "password",
+    "name": "name"
+  }
+}
