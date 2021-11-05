@@ -63,17 +63,16 @@ async function isBad(message) {
     if (swearjar.profane(messageString) && (messageString.includes("china")||messageString.includes("ccp")||messageString.includes("trash")||messageString.includes("bad"))) {
         let user = await message.client.dbInstance.collection('users').findOne({uuid:userid});
         let usrOffenses = user.offenses+1; // adds one to include new strike in deduction
-        let deduct = 10*(usrOffenses > 5 ? 5 : usrOffenses); // multipler caps at 5 strikes
-        
-        userU = await message.client.dbInstance.collection('users').updateOne(
+        const deduct = -Math.abs(10*(usrOffenses > 5 ? 5 : usrOffenses)); // multipler caps at 5 strikes
+        const userU = await message.client.dbInstance.collection('users').updateOne(
             { uuid: userid },
             {
-                $inc: {balance: -(deduct)},
-                $inc: {offenses: 1} 
+                $inc: {balance: deduct},$inc:{offenses:1}
             }
         )
+        console.log(user.balance)
         console.log(`deducted 10 from ${userid}`)
-        message.channel.send(`-${deduct} social credit <@!${userid}> | Strikes: ${usrOffenses}`)
+        message.channel.send(`${deduct} social credit <@!${userid}> | Strikes: ${usrOffenses}`)
         try{
             message.delete()
         }
@@ -91,18 +90,31 @@ async function isGood(message) {
 	) {
 		//score the bitch
 		const userid = message.author.id;
-		const add = 10;
         let user = await message.client.dbInstance.collection('users').findOne({uuid:userid});
-        let usrOffenses = user.offenses;
+        const uOffneses = user.offenses
+        if(uOffneses < 0) {
+
+            userU = await message.client.dbInstance.collection("users").updateOne(
+                { uuid: userid }, {$set: {offenses: 0 }})
+        }
 		userU = await message.client.dbInstance.collection("users").updateOne(
 			{ uuid: userid },
 			{
-				$inc: { balance: add },
-                $inc: {offenses: usrOffenses > 0 ? -1 : 0} // prevents offenses from going negative
+				$inc: {balance: 10 },
+               
             }
 		);
+
+        userU = await message.client.dbInstance.collection("users").updateOne(
+			{ uuid: userid },
+			{
+				$inc: {offenses: -1 },
+               
+            }
+		);
+
 		console.log(`added 10 to ${userid}`);
-		message.channel.send(`+${add} social credit <@!${userid}>`);
+		message.channel.send(`+10 social credit <@!${userid}>`);
 		try {
 			message.delete;
 		} catch {
