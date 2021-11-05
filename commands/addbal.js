@@ -1,5 +1,3 @@
-const { SystemChannelFlags } = require("discord.js")
-
 module.exports = {
     name: 'addbal',
     description: 'gets social credit balance',
@@ -24,4 +22,5 @@ module.exports = {
     }
         }
     }
+
 }
