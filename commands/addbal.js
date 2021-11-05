@@ -10,7 +10,7 @@ module.exports = {
         } else {
             const userid = mention ? mention.id : message.author.id;
             const userB_OLD = await message.client.dbInstance.collection('users').findOne({ uuid: userid });
-            const userU = await message.client.dbInstance.collection('users').updateOne(
+            await message.client.dbInstance.collection('users').updateOne(
                 { uuid: userid },
                 {
                     $inc: {balance: amount}
