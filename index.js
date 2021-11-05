@@ -66,7 +66,7 @@ client.on('messageCreate', async message => {
             const userU = await message.client.dbInstance.collection('users').updateOne(
                 { uuid: userid },
                 {
-                    $inc: {balance: -amount}
+                    $inc: {balance: -amount},
                 }
             );
             console.log("User punished.", userid);
