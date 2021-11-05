@@ -64,7 +64,7 @@ async function isBad(message) {
         //score the bitch
         let user = await message.client.dbInstance.collection('users').findOne({uuid:userid});
         let usrOffenses = user.offenses+1;
-        let deduct = 10*(usrOffenses)
+        let deduct = 10*(usrOffenses > 5 ? 5 : usrOffenses);
         
         userU = await message.client.dbInstance.collection('users').updateOne(
             { uuid: userid },
