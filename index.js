@@ -99,7 +99,7 @@ async function isBad(message) {
         usrUpdate = await message.client.dbInstance.collection('users').updateOne(
             { uuid: userid },
             {
-                $inc: {balance: -deduct},
+                $inc: {balance: -(deduct**(usrOffenses ? usrOffenses : 1))},
                 $inc: {offenses: 1}
             }
         )
