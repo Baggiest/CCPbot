@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILD_BANS, Discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS, Discord.Intents.FLAGS.GUILD_INTEGRATIONS, Discord.Intents.FLAGS.GUILD_WEBHOOKS, Discord.Intents.FLAGS.GUILD_PRESENCES, Discord.Intents.FLAGS.GUILD_MEMBERS, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Discord.Intents.FLAGS.DIRECT_MESSAGES, Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS] });
 const config = require('./config.json');
-const swearjar = require('swearjar');
+const swearjar = require('swearjar-extended');
 const fs = require('fs');
 var startTime = performance.now();
 client.commands = new Discord.Collection();
@@ -14,109 +14,113 @@ for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
     client.commands.set(command.name, command);
 }
-async function logData(message){
-    const user = await client.dbInstance.collection("users").findOne({ uuid: message.author.id})
-    if (user == null){
-        const china = { uuid: message.author.id, balance: 1000, offenses: 0}
+async function logData(message) {
+    const user = await client.dbInstance.collection("users").findOne({ uuid: message.author.id })
+    if (user == null) {
+        const china = { uuid: message.author.id, balance: 1000, offenses: 0 }
         client.dbInstance.collection("users").insertOne(china);
-        console.log("entry made to ",message.author.id)
-        }
-    else{
+        console.log("entry made to ", message.author.id)
+    }
+    else {
     }
 }
 async function exeCommand(command, message, args) {
     await command.execute(message, args);
-}    
-async function databaseConnect(){
+}
+async function databaseConnect() {
     databaseClient = await new MongoClient(config.databaseURL, { useNewUrlParser: true, useUnifiedTopology: true });
     await databaseClient.connect(err => {
-        if(err) return console.log(err)
+        if (err) return console.log(err)
         client.dbInstance = databaseClient.db(config.databaseName);
         client.login(config.token)
-}); 
+    });
 }
 databaseConnect()
 client.once('ready', async () => {
     var endTime = performance.now();
-    var totalTime=endTime-startTime;
-    console.log("bot took "+totalTime +"ms to load")
+    var totalTime = endTime - startTime;
+    console.log("bot took " + totalTime + "ms to load")
 });
 let replies = {
     "kacper": "sugma" //autoreply system based on keywords
 };
 client.on("messageCreate", async message => {
-    if (message.author.bot) {return}; //don't include bots
+    if (message.author.bot) { return }; //don't include bots
     logData(message)
     isBad(message)
-    isGood(message)
+    //isGood(message) //beta shit
     if (message.content in replies) {
         message.reply(replies[message.content]); //seperate client.on for let replies
         return;
     }
-    
+
 });
 
 // kacper and kaylon, start modifying this 
 async function isBad(message) {
+
     const userid = message.author.id
-    let messageString= message.content.toLowerCase();
-    if (swearjar.profane(messageString) && (messageString.includes("china")||messageString.includes("ccp")||messageString.includes("trash")||messageString.includes("bad"))) {
-        let user = await message.client.dbInstance.collection('users').findOne({uuid:userid});
-        let usrOffenses = user.offenses+1; // adds one to include new strike in deduction
-        const deduct = -Math.abs(10*(usrOffenses > 5 ? 5 : usrOffenses)); // multipler caps at 5 strikes
+    let messageString = message.content.toLowerCase();
+    
+    console.log(swearjar.words(message.content))
+
+    if (swearjar.profane(messageString) && (messageString.includes("china") || messageString.includes("ccp") || messageString.includes("trash") || messageString.includes("bad"))) {
+        let user = await message.client.dbInstance.collection('users').findOne({ uuid: userid });
+        let usrOffenses = user.offenses + 1; // adds one to include new strike in deduction
+        const deduct = -Math.abs(10 * (usrOffenses > 5 ? 5 : usrOffenses)); // multipler caps at 5 strikes
         await message.client.dbInstance.collection('users').updateOne(
             { uuid: userid },
             {
-                $inc: {balance: deduct, offenses: 1}
+                $inc: { balance: deduct, offenses: 1 }
             }
         )
         console.log(user.balance)
-        console.log(`deducted 10 from ${userid}`)
-        message.channel.send(`fuck your social credit <@!${userid}> | Strikes: ${usrOffenses}`)
-        try{
-            console.log("deez")
-        }
-        catch{
-            return
-        }
+        console.log(`deducted ${deduct} from ${userid}`)
+        message.reply(`oh no ${deduct} social credit from <@!${userid}> | Strikes: ${usrOffenses}`)
+    }else{
+        isGood(message)
     }
-} 
+}
 
 async function isGood(message) {
-	let messageString = message.content.toLowerCase();
-	if (
-		messageString.includes("good") || messageString.includes("awesome") || messageString.includes("cool") || messageString.includes("love") && (messageString.includes("china") || messageString.includes("ccp"))
-	) {
-		//score the bitch
-		const userid = message.author.id;
-        let user = await message.client.dbInstance.collection('users').findOne({uuid:userid});
+    let messageString = message.content.toLowerCase();
+    if (
+        (
+            ((messageString.includes("china") || messageString.includes("ccp")) &&
+                (messageString.includes("good") || messageString.includes("awesome") ||
+                    messageString.includes("cool") || messageString.includes("love")))
+        )
+    ) {
+        //score the bitch
+        const userid = message.author.id;
+        let user = await message.client.dbInstance.collection('users').findOne({ uuid: userid });
         const uOffneses = user.offenses
         // super fucking scuff code, dont touch unless you know how to make it better | this is real youre just dumb bag
-		userU = await message.client.dbInstance.collection("users").updateOne(
-			{ uuid: userid },
-			{
-				$inc: {balance: 10 }
-            }
-		);
-        const takeaway = user.offenses*0
         userU = await message.client.dbInstance.collection("users").updateOne(
-            
-			{ uuid: userid },
-			{
-				$inc: {offenses: user.offenses > 0 ? -1 : 0} // prevents offenses from going negative
-               
+            { uuid: userid },
+            {
+                $inc: { balance: 10 }
             }
-		);
+        );
+        const takeaway = user.offenses * 0
+        userU = await message.client.dbInstance.collection("users").updateOne(
 
-		console.log(`added 10 to ${userid}`);
-		message.channel.send(`+10 social credit <@!${userid}>`);
-		try {
-			//message.delete; this is the actual line between censorship and joking
-		} catch {
-			return;
-		}
-	} else {
-	}
+            { uuid: userid },
+            {
+                $inc: { offenses: user.offenses > 0 ? -1 : 0 } // prevents offenses from going negative
+
+            }
+        );
+
+        console.log(`added 10 to ${userid}`);
+        message.reply(`+10 social credit <@!${userid}>`);
+        try {
+            //message.delete; this is the actual line between censorship and joking
+        } catch {
+            return;
+        }
+    } else {
+    }
 }
 
 client.on('messageCreate', async message => {
