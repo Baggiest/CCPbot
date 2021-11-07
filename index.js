@@ -60,14 +60,28 @@ client.on("messageCreate", async message => {
 async function isBad(message) {
 
     const userid = message.author.id
-    let messageString = message.content.toLowerCase();
-    
-    console.log(swearjar.words(message.content))
 
-    if (swearjar.profane(messageString) && (messageString.includes("china") || messageString.includes("ccp") || messageString.includes("trash") || messageString.includes("bad"))) {
-        let user = await message.client.dbInstance.collection('users').findOne({ uuid: userid });
-        let usrOffenses = user.offenses + 1; // adds one to include new strike in deduction
-        const deduct = -Math.abs(10 * (usrOffenses > 5 ? 5 : usrOffenses)); // multipler caps at 5 strikes
+    //console.log(swearjar.words(message.content))
+
+    let user = await message.client.dbInstance.collection('users').findOne({ uuid: userid });
+    let usrOffenses = user.offenses + 1; // adds one to include new strike in deduction
+    const deduct = -Math.abs(10 * (usrOffenses > 5 ? 5 : usrOffenses)); // multipler caps at 5 strikes
+
+    var messageString = message.content.toLowerCase();
+    var messageString = messageString.slice(" ");
+    console.log(swearjar.words(messageString))
+    var messageChinaString = swearjar.words(messageString)
+    //console.log(messageChinaString[messageString][0])
+    if (messageChinaString[messageString][0] === "china") {
+
+        await message.client.dbInstance.collection('users').updateOne({ uuid: userid }, { $inc: { balance: deduct, offenses: 1 } })
+
+        console.log(user.balance)
+        console.log(`deducted ${deduct} from ${userid}`)
+        message.reply(`oh no ${deduct} social credit from <@!${userid}> | Strikes: ${usrOffenses}`)
+
+    } else if (swearjar.profane(messageString) && (messageString.includes("china") || messageString.includes("ccp") || messageString.includes("trash") || messageString.includes("bad"))) {
+
         await message.client.dbInstance.collection('users').updateOne(
             { uuid: userid },
             {
@@ -77,7 +91,8 @@ async function isBad(message) {
         console.log(user.balance)
         console.log(`deducted ${deduct} from ${userid}`)
         message.reply(`oh no ${deduct} social credit from <@!${userid}> | Strikes: ${usrOffenses}`)
-    }else{
+    } else {
+        
         isGood(message)
     }
 }
@@ -95,7 +110,7 @@ async function isGood(message) {
         const userid = message.author.id;
         let user = await message.client.dbInstance.collection('users').findOne({ uuid: userid });
         const uOffneses = user.offenses
-        // super fucking scuff code, dont touch unless you know how to make it better | this is real youre just dumb bag
+        // super fucking scuff code, dont touch unless you know how to make it better | this is real youre just dumb bag <----- qusai being a dumbass
         userU = await message.client.dbInstance.collection("users").updateOne(
             { uuid: userid },
             {

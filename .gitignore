@@ -43,8 +43,10 @@ bower_components
 build/Release
 
 # Dependency directories
+
+
 node_modules/
-!node_modules/swearjar-extended/lib/config/en_US.json
+! /node_modules/swearjar-extended/lib/config/*.json
 jspm_packages/
 
 # TypeScript v1 declaration files
