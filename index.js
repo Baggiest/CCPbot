@@ -74,7 +74,7 @@ async function isBad(message) {
         console.log(`deducted 10 from ${userid}`)
         message.channel.send(`${deduct} social credit <@!${userid}> | Strikes: ${usrOffenses}`)
         try{
-            console.log("deez")
+            console.log("Tried.")
         }
         catch{
             return
