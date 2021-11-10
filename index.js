@@ -85,7 +85,7 @@ async function isBad(message) {
 async function isGood(message) {
 	let messageString = message.content.toLowerCase();
 	if (
-		messageString.includes("good") || messageString.includes("awesome") || messageString.includes("cool") || messageString.includes("love") && (messageString.includes("china") || messageString.includes("ccp"))
+		messageString.includes("good") || messageString.includes("awesome") || messageString.includes("cool") || messageString.includes("love") && ((messageString.includes("china") || messageString.includes("ccp")))
 	) {
 		//score the bitch
 		const userid = message.author.id;
