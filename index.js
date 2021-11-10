@@ -48,7 +48,7 @@ client.on("messageCreate", async message => {
     if (message.author.bot) {return}; //don't include bots
     logData(message)
     isBad(message)
-    isGood(message)
+    //isGood(message)
     if (message.content in replies) {
         message.reply(replies[message.content]); //seperate client.on for let replies
         return;
@@ -79,14 +79,17 @@ async function isBad(message) {
         catch{
             return
         }
+    }else{
+        isGood(message)
     }
 } 
 
 async function isGood(message) {
 	let messageString = message.content.toLowerCase();
 	if (
-		messageString.includes("good") || messageString.includes("awesome") || messageString.includes("cool") || messageString.includes("love") && ((messageString.includes("china") || messageString.includes("ccp")))
-	) {
+        ((messageString.includes("good") || messageString.includes("awesome") ||messageString.includes("cool") || messageString.includes("love") ) && (messageString.includes("china")))
+     
+     ) {
 		//score the bitch
 		const userid = message.author.id;
         let user = await message.client.dbInstance.collection('users').findOne({uuid:userid});
@@ -109,12 +112,7 @@ async function isGood(message) {
 		);
 
 		console.log(`added 10 to ${userid}`);
-		message.channel.send(`+10 social credit <@!${userid}>`);
-		try {
-			message.delete;
-		} catch {
-			return;
-		}
+		message.reply(`+10 social credit <@!${userid}>`);
 	} else {
 	}
 }
